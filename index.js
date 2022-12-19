@@ -1,21 +1,23 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require('body-parser');
 const app = express();
+const Airtable = require('airtable');
 const PORT = process.env.PORT || 3030;
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
 
-var Airtable = require('airtable');
 Airtable.configure({
     endpointUrl: 'https://api.airtable.com',
     apiKey: AIRTABLE_API_KEY
 });
-var base = Airtable.base('app2IBFSfsLFaK4Sq');
+var base = Airtable.base(AIRTABLE_BASE_ID);
 
 app.use(bodyParser.json());
 
 function addEntry(text) {
     const val = text.split(" ");
-    const day = {fields: {Valor:parseInt(val[0]), Categoria: val[1], Tipo: "Saída"}};
+    const day = {fields: {Valor:parseInt(val[0]), Categoria: val[1]}};
     base('Day').create([
         day
     ], function(err, records) {
