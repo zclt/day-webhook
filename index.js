@@ -16,26 +16,28 @@ var base = Airtable.base(AIRTABLE_BASE_ID);
 app.use(bodyParser.json());
 
 function addEntry(text) {
-    const val = text.split(" ");
-    const day = {fields: {Valor:parseInt(val[0]), Categoria: val[1]}};
-    base('Day').create([
-        day
-    ], function(err, records) {
-        if (err) {
-            console.error(err);
-        return;
-        }
-        records.forEach(function (record) {
-            console.log(record.getId());
+    const val = text.split(" ");    
+    const day = {fields: {Valor:parseFloat(val[0]), Categoria: val[1]}};
+    if(day.fields.Valor && day.fields.Categoria) {    
+        base('Day').create([
+            day
+        ], function(err, records) {
+            if (err) {
+                console.error(err);
+            return;
+            }
+            records.forEach(function (record) {
+                console.log(record.getId());
+                console.log(record.fields);
+            });
         });
-    });
+    }
 }
 
 app.post('/day-webhook', (req, res) => {
     if(req.body?.type==="url_verification") {
         res.send(req.body?.challenge);
     } else if(req.body?.event?.type==="message") {
-        console.log(req.body?.event?.text);
         addEntry(req.body?.event?.text);
         res.send("");
     } else {
