@@ -16,7 +16,7 @@ var base = Airtable.base(AIRTABLE_BASE_ID);
 app.use(bodyParser.json());
 
 function addEntry(text) {
-    const val = text.split(" ");    
+    const val = (text ?? "").split(" ");
     const day = {fields: {Valor:parseFloat(val[0]), Categoria: val[1]}};
     if(day.fields.Valor && day.fields.Categoria) {    
         base('Day').create([
